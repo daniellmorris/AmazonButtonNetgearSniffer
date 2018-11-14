@@ -103,11 +103,15 @@ class AmazonShopping {
     }
   }
 
-  async manualUserLogin () {
+  async manualUserLogin (cookies = null) {
     let ret = null;
     try {
       console.log("Going to web page");
       await this.page.goto('https://www.amazon.com')
+     
+      if (cookies) {
+        await this.page.setCookie(...cookies)
+      }
 
       console.log("Inserting and wating for done");
       await this.insertUIAndWaitForDone();     

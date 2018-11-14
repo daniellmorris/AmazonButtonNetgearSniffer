@@ -10,20 +10,26 @@ const Puppeteer = require('prompt-promise');
 
 DB.setup(async function(db) {
   let dashes = await db.findOne({type: 'dashes'}) || {};
+  let lastSetupCookies = await db.findOne({type: 'last_setup_cookies'}) || {};
   let detect = new Detect(dashes, db, config.detect.type);
 
   let amazon = new AmazonShopping();
 
   async function setupAmazon() {
     await amazon.setup();
-    let ret = await amazon.manualUserLogin();
+    let ret = await amazon.manualUserLogin(lastSetupCookies.cookies);
     await amazon.destroy();
     return ret;
   }
   
   if (process.env.DEBUG_FOR_DASH) {
+    dashes[process.env.DEBUG_FOR_DASH] = {description: await Prompt("Enter description: ")};
+    dashes.type = 'dashes';
     dashes[process.env.DEBUG_FOR_DASH].amazon = await setupAmazon();
     let upRet = await db.update({ type: 'dashes' }, dashes, { upsert: true })
+    if (dashes[process.env.DEBUG_FOR_DASH].amazon && dashes[process.env.DEBUG_FOR_DASH].amazon.cookies) { 
+      await db.update({ type: 'last_setup_cookies' }, {type: 'last_setup_cookies', cookies: dashes[process.env.DEBUG_FOR_DASH].amazon.cookies}, { upsert: true })
+    }
     return
   }
 
@@ -48,6 +54,8 @@ DB.setup(async function(db) {
                 dashes[mac].amazon = await setupAmazon();
                 if (dashes[mac].amazon) { 
                   let upRet = await db.update({ type: 'dashes' }, dashes, { upsert: true })
+              
+                  await db.update({ type: 'last_setup_cookies' }, {type: 'last_setup_cookies', cookies: dashes[mac].amazon.cookies}, { upsert: true })
                 } else {
                   console.log("Failed to re-configure dash button", mac, dash[mac].description);
                 }
@@ -67,6 +75,10 @@ DB.setup(async function(db) {
               dashes[mac].amazon = await setupAmazon();
               
               let upRet = await db.update({ type: 'dashes' }, dashes, { upsert: true })
+              
+              if (dashes[mac].amazon && dashes[mac].amazon.cookies) { 
+                await db.update({ type: 'last_setup_cookies' }, {type: 'last_setup_cookies', cookies: dashes[mac].amazon.cookies}, { upsert: true })
+              }
 
               console.log("Done with amazon");
             }
