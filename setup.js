@@ -17,6 +17,7 @@ DB.setup(async function(db) {
 
   async function setupAmazon() {
     await amazon.setup();
+    console.log(lastSetupCookies)
     let ret = await amazon.manualUserLogin(lastSetupCookies.cookies);
     await amazon.destroy();
     return ret;

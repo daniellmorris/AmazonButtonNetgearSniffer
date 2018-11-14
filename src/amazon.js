@@ -110,7 +110,10 @@ class AmazonShopping {
       await this.page.goto('https://www.amazon.com')
      
       if (cookies) {
+        console.log("Setting cookies", cookies);
         await this.page.setCookie(...cookies)
+      } else {
+        console.log("No cookies to set")
       }
 
       console.log("Inserting and wating for done");
