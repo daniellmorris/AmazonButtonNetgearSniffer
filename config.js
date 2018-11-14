@@ -12,5 +12,8 @@ module.exports = {
     },
     wrn2000v5: {
     }
+  },
+  amazon: {
+    headless: false
   }
 }

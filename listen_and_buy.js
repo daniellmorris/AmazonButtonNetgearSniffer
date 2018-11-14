@@ -14,10 +14,15 @@ DB.setup(async function(db) {
   let amazon = new AmazonShopping();
 
   async function buy(dash) {
-    await amazon.setup(false);
+    await amazon.setup(config.amazon.headless);
     let ret = await amazon.buy(dash.amazon);
     await amazon.destroy();
     return ret;
+  }
+
+  if (process.env.DEBUG_BUY_FOR_DASH) {
+    await buy(process.env.DEBUG_BUY_FOR_DASH)
+    return
   }
 
   console.log("Setting up detection");
