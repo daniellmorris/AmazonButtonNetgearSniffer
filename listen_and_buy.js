@@ -21,7 +21,7 @@ DB.setup(async function(db) {
   }
 
   if (process.env.DEBUG_BUY_FOR_DASH) {
-    await buy(process.env.DEBUG_BUY_FOR_DASH)
+    await buy(dashes[process.env.DEBUG_BUY_FOR_DASH])
     return
   }
 
