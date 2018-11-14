@@ -163,7 +163,7 @@ class AmazonShopping {
       await this.page.waitFor(10000);
       stage = 'postbuyscreenshot'
       await this.page.screenshot({path: 'post-buy.png'});
-      images.push('pre-buy.png');
+      images.push('post-buy.png');
 
       stage = 'success'
       ret = true
