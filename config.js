@@ -1,3 +1,5 @@
+let secrets = require('secrets.js');
+
 module.exports = {
   detect: {
     type: 'csv',
@@ -15,5 +17,6 @@ module.exports = {
   },
   amazon: {
     headless: false
-  }
+  },
+  nodemailer: secrets.nodemailer
 }

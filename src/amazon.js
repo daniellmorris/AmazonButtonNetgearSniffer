@@ -99,17 +99,22 @@ class AmazonShopping {
   }
 
   async buy (amazon) {
-    let ret = null;
+    let ret = false;
+    let stage = 'starting'
     try {
       console.log("Going to buy page");
       await this.page.setCookie(...amazon.cookies)
+      stage = 'navigating'
       await this.page.goto(amazon.buy_url || amazon.url) // || for backwards compatibility
       
+      stage = 'waitingforbuybutton'
       await this.page.waitForSelector('#oneClickBuyButton');
 
+      stage = 'prebuyscreenshot'
       await this.page.screenshot({path: 'pre-buy.png'});
 
       //await this.click
+      stage = 'clickoneclickbuy'
       await this.page.evaluate(async () => {
         let ret = document.querySelector('#oneClickBuyButton');
         console.log(ret);
@@ -119,10 +124,14 @@ class AmazonShopping {
         }
         return true
       });
+      stage = 'waitloadcompletion'
       await this.page.waitFor(10000);
+      stage = 'postbuyscreenshot'
       await this.page.screenshot({path: 'post-buy.png'});
+      stage = 'success'
+      ret = true
     } catch (e) {
-      console.log(e);
+      console.log('Buying - Error: ', e);
     }
     return ret;
   }
