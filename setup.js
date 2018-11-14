@@ -1,39 +1,16 @@
 
-const DB = require('./db.js')
-const {Detect} = require('./src/detect.js')
+const DB = require('./db.js');
+const {Detect} = require('./src/detect.js');
 const {AmazonShopping} = require('./src/amazon.js')
 
 const Prompt = require('prompt-promise');
+const config = require('./config');
 
 const Puppeteer = require('prompt-promise');
 
 DB.setup(async function(db) {
   let dashes = await db.findOne({type: 'dashes'}) || {};
-  const changeUserPass = async (headers) => {
-    let user = await Prompt("Netgear WRN2000v5 Username: ");
-    let pass = await Prompt("Netgear WRN2000v5 Password: ");
-
-    headers.authorization = "Basic " + Buffer.from(user + ":" + pass).toString('base64');
-    headers.type = 'headers';
-    
-    let upRet = await db.update({ type: 'headers' }, headers, { upsert: true })
-    console.log("Update return", upRet);
-
-    return headers;
-  }
-  let headers = await db.findOne({type: 'headers'})||{};
-
-  if (!headers || !headers.authorization) {
-    headers = await changeUserPass(headers);
-  } else {
-    let res = (await Prompt('Change username and password (yes/no):')).toLowerCase();
-    if (res==='y' || res==='yes') {
-      headers = await changeUserPass(headers);
-    }
-  }
-
-
-  let detect = new Detect(dashes, headers.authorization);
+  let detect = new Detect(dashes, db, config.detect.type);
 
   let amazon = new AmazonShopping();
 
@@ -46,7 +23,7 @@ DB.setup(async function(db) {
 
   console.log("Setting up detection");
   console.log("Make sure your dash button is connected to the network and press the button.");
-  detect.setup()
+  detect.setup(config.detect[config.detect.type])
     .then(async () => {
       console.log("Starting detection");
       await detect.start((async function(dashes, mac, line) {
@@ -91,5 +68,6 @@ DB.setup(async function(db) {
         }
       }).bind(this))
     })
-    .then(() => console.log("Done"));
+    .then(() => console.log("Done"))
+    .catch(err => console.log(err))
 })

@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.17.1",
+    "moment": "^2.22.2",
     "nedb": "^1.8.0",
     "prompt-promise": "^1.0.3",
     "puppeteer": "^0.13.0"

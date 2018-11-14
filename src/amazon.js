@@ -8,7 +8,7 @@ class AmazonShopping {
 
   async setup (isHeadless) {
     console.log("Setting up amazon stuff");
-    this.browser = await puppeteer.launch({headless: !!isHeadless, 'args': ['--disable-infobars']});
+    this.browser = await puppeteer.launch({headless: !!isHeadless, 'args': ['--disable-infobars', '--no-sandbox', '--disable-setuid-sandbox']});// For WSL support args: ['--no-sandbox', '--disable-setuid-sandbox']
     this.page = await this.browser.newPage();
   }
   
