@@ -20,6 +20,11 @@ DB.setup(async function(db) {
     await amazon.destroy();
     return ret;
   }
+  
+  if (process.env.DEBUG_FOR_DASH) {
+    await setupAmazon(dashes[process.env.DEBUG_FOR_DASH])
+    return
+  }
 
   console.log("Setting up detection");
   console.log("Make sure your dash button is connected to the network and press the button.");

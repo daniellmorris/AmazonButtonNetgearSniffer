@@ -1,4 +1,4 @@
-let secrets = require('secrets.js');
+let secrets = require('./secrets');
 
 module.exports = {
   detect: {
@@ -16,7 +16,8 @@ module.exports = {
     }
   },
   amazon: {
-    headless: false
+    headless: false,
+    emailOnDone: 'daniellmorris@gmail.com'
   },
-  nodemailer: secrets.nodemailer
+  nodemailer: (secrets||{}).nodemailer
 }

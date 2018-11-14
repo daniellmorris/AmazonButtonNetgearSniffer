@@ -1,4 +1,6 @@
 const puppeteer = require('puppeteer');
+const config = require('../config');
+const nodemailer = require('nodemailer');
 
 class AmazonShopping {
 
@@ -10,6 +12,25 @@ class AmazonShopping {
     console.log("Setting up amazon stuff");
     this.browser = await puppeteer.launch({headless: !!isHeadless, 'args': ['--disable-infobars', '--no-sandbox', '--disable-setuid-sandbox']});// For WSL support args: ['--no-sandbox', '--disable-setuid-sandbox']
     this.page = await this.browser.newPage();
+    this.smtpTransport = nodemailer.createTransport(config.nodemailer.setup);
+  }
+
+  async sendEmail (subject, message) {
+    console.log("Sending email")
+    var mailOptions = {
+        from: config.nodemailer.fromEmail,
+        to: config.amazon.emailOnDone, 
+        subject: subject,
+        text: message
+    }
+    await new Promise((resolve, reject) => {
+      this.smtpTransport.sendMail(mailOptions, function(error, response){
+        if(error){
+          console.error("Failed to send email: ", error);
+        }
+        resolve()
+      });
+    })
   }
   
   async destroy () {
@@ -100,6 +121,9 @@ class AmazonShopping {
 
   async buy (amazon) {
     let ret = false;
+    let error = null;
+    let message = ''
+    let subject = 'Amazon buy - Success'
     let stage = 'starting'
     try {
       console.log("Going to buy page");
@@ -132,7 +156,16 @@ class AmazonShopping {
       ret = true
     } catch (e) {
       console.log('Buying - Error: ', e);
+      subject = 'Amazon buy - Error'
+      error = e;
     }
+    message += `Subject: ${subject}`
+    message += `Last Processing Stage: ${stage}`
+    if (error) {
+      message += `ErrorMessage: ${error.message}`
+      message += `ErrorStack: ${error.stack}`
+    }
+    await this.sendEmail(subject, message)
     return ret;
   }
 }
