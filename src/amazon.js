@@ -133,6 +133,7 @@ class AmazonShopping {
     let message = ''
     let subject = 'Amazon buy - Success'
     let stage = 'starting'
+    let images = [];
     console.log("Buy ", stage);
     try {
       console.log("Going to buy page");
@@ -145,6 +146,7 @@ class AmazonShopping {
 
       stage = 'prebuyscreenshot'
       await this.page.screenshot({path: 'pre-buy.png'});
+      images.push('pre-buy.png');
 
       //await this.click
       stage = 'clickoneclickbuy'
@@ -161,6 +163,8 @@ class AmazonShopping {
       await this.page.waitFor(10000);
       stage = 'postbuyscreenshot'
       await this.page.screenshot({path: 'post-buy.png'});
+      images.push('pre-buy.png');
+
       stage = 'success'
       ret = true
     } catch (e) {
@@ -176,18 +180,16 @@ class AmazonShopping {
       message += `ErrorStack: ${error.stack}\n`
     }
     message += `\nBuy Anything`
-    await this.sendEmail(subject, message, [
-      {
-        filename: 'pre-buy.png',
-        path: '/home/daniellmorris/AmazonButtonNetgearSniffer/pre-buy.png',
-        cid: 'prebuyid' //same cid value as in the html img src
-      },
-      {
-        filename: 'post-buy.png',
-        path: '/home/daniellmorris/AmazonButtonNetgearSniffer/post-buy.png',
-        cid: 'postbuyid' //same cid value as in the html img src
-      }
-    ])
+    // Attachments
+    let attachments = [];
+    for (let i of images) {
+      attachments.push({
+        filename: i,
+        path: i,
+        cid: i
+      })
+    }
+    await this.sendEmail(subject, message, attachments)
     return ret;
   }
 }

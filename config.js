@@ -16,7 +16,7 @@ module.exports = {
     }
   },
   amazon: {
-    headless: false,
+    headless: true,
     emailOnDone: 'daniellmorris@gmail.com'
   },
   nodemailer: (secrets||{}).nodemailer
