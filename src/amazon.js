@@ -125,6 +125,7 @@ class AmazonShopping {
     let message = ''
     let subject = 'Amazon buy - Success'
     let stage = 'starting'
+    console.log("Buy ", stage);
     try {
       console.log("Going to buy page");
       await this.page.setCookie(...amazon.cookies)
