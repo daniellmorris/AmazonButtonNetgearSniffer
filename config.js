@@ -10,7 +10,8 @@ module.exports = {
         deviceId: 1,
         statusId: 2
       },
-      statusToMatch: 'Connected'
+      statusToMatch: 'Connected',
+      datePattern: 'MMMM D, YYYY at hh:mma'
     },
     wrn2000v5: {
     }

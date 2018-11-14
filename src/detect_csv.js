@@ -50,7 +50,7 @@ class DetectCsv {
       let idx = 0;
       for (let line of fileValues) {
         if (line[this.config.csv_indexes.statusId]===this.config.statusToMatch) {
-          let date = moment(line[this.config.csv_indexes.date], 'MMMM D, YYYY at hh:mma').toDate()
+          let date = moment(line[this.config.csv_indexes.date], this.config.datePattern).toDate()
           macs.push({mac: line[this.config.csv_indexes.deviceId], timestamp: date, total: idx}) 
           idx++;
         }
