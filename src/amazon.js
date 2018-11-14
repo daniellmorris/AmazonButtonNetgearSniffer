@@ -176,7 +176,7 @@ class AmazonShopping {
       message += `ErrorStack: ${error.stack}\n`
     }
     message += `\nBuy Anything`
-    await this.sendEmail(subject, message, attachments: [
+    await this.sendEmail(subject, message, [
       {
         filename: 'pre-buy.png',
         path: '/home/daniellmorris/AmazonButtonNetgearSniffer/pre-buy.png',
