@@ -15,13 +15,14 @@ class AmazonShopping {
     this.smtpTransport = nodemailer.createTransport(config.nodemailer.setup);
   }
 
-  async sendEmail (subject, message) {
+  async sendEmail (subject, message, attachments) {
     console.log("Sending email")
     var mailOptions = {
         from: config.nodemailer.fromEmail,
         to: config.amazon.emailOnDone, 
         subject: subject,
-        text: message
+        text: message,
+        attachments: attachments
     }
     await new Promise((resolve, reject) => {
       this.smtpTransport.sendMail(mailOptions, function(error, response){
@@ -126,7 +127,7 @@ class AmazonShopping {
     return ret;
   }
 
-  async buy (amazon) {
+  async buy (amazon, description) {
     let ret = false;
     let error = null;
     let message = ''
@@ -167,13 +168,26 @@ class AmazonShopping {
       subject = 'Amazon buy - Error'
       error = e;
     }
-    message += `Subject: ${subject}`
-    message += `Last Processing Stage: ${stage}`
+    message += `Subject: ${subject}\n`
+    message += `Description: ${description}\n`
+    message += `Last Processing Stage: ${stage}\n`
     if (error) {
-      message += `ErrorMessage: ${error.message}`
-      message += `ErrorStack: ${error.stack}`
+      message += `ErrorMessage: ${error.message}\n`
+      message += `ErrorStack: ${error.stack}\n`
     }
-    await this.sendEmail(subject, message)
+    message += `\nBuy Anything`
+    await this.sendEmail(subject, message, attachments: [
+      {
+        filename: 'pre-buy.png',
+        path: '/home/daniellmorris/AmazonButtonNetgearSniffer/pre-buy.png',
+        cid: 'prebuyid' //same cid value as in the html img src
+      },
+      {
+        filename: 'post-buy.png',
+        path: '/home/daniellmorris/AmazonButtonNetgearSniffer/post-buy.png',
+        cid: 'postbuyid' //same cid value as in the html img src
+      }
+    ])
     return ret;
   }
 }

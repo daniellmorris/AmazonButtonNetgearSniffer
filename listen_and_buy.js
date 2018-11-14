@@ -15,13 +15,13 @@ DB.setup(async function(db) {
 
   async function buy(dash) {
     await amazon.setup(config.amazon.headless);
-    let ret = await amazon.buy(dash.amazon);
+    let ret = await amazon.buy(dash.amazon, dash.description);
     await amazon.destroy();
     return ret;
   }
 
   if (process.env.DEBUG_FOR_DASH) {
-    await buy(dashes[process.env.DEBUG_FOR_DASH])
+    await buy(dashes[process.env.DEBUG_FOR_DASH]||{})
     return
   }
 
