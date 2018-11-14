@@ -5,11 +5,11 @@ const {AmazonShopping} = require('./src/amazon.js')
 const Prompt = require('prompt-promise');
 
 const Puppeteer = require('prompt-promise');
+const config = require('./config');
 
 DB.setup(async function(db) {
   let dashes = await db.findOne({type: 'dashes'}) || {};
-  let headers = await db.findOne({type: 'headers'})||{};
-  let detect = new Detect(dashes, headers.authorization);
+  let detect = new Detect(dashes, db, config.detect.type);
 
   let amazon = new AmazonShopping();
 
@@ -22,7 +22,7 @@ DB.setup(async function(db) {
 
   console.log("Setting up detection");
   console.log("Make sure your dash button is connected to the network and press the button.");
-  detect.setup()
+  detect.setup(config.detect[config.detect.type])
     .then(async () => {
       console.log("Starting detection");
       await detect.start((async function(dashes, mac, line) {
