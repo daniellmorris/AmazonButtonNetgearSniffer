@@ -22,7 +22,7 @@ DB.setup(async function(db) {
   }
   
   if (process.env.DEBUG_FOR_DASH) {
-    dashes[mac].amazon = await setupAmazon();
+    dashes[process.env.DEBUG_FOR_DASH].amazon = await setupAmazon();
     let upRet = await db.update({ type: 'dashes' }, dashes, { upsert: true })
     return
   }
