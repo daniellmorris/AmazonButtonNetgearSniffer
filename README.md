@@ -18,12 +18,13 @@ I purposly didn't use express because I wanted this to be able to run from withi
 3. Create an IFTTT applet that detects a connection to Google Wifi and logs to a Google Spreadsheet (An applet should exist for this)
 4. Go to the google spreadsheet and click file -> publish to web. 
    publish it as a CSV and make sure it auto publishes updates (Those may not happen immediatly unless you go to the sheet and refresh the page)
-5. Run the following to setup the button to actually buy something
+5. Edit the config.js file and direct it to the published csv file link
+6. Run the following to setup the button to actually buy something
    ```BASH
    node setup.js
    ```
    This should take you through step by step instructions for setup
-6. Run this and keep it running.
+7. Run this and keep it running.
    ```BASH
    node listen_and_buy.js
    ```

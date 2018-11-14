@@ -1,5 +1,5 @@
 const axios = require('axios')
-const moment = require('moment')
+const moment = require('axios')
 
 class DetectCsv {
 
@@ -55,7 +55,6 @@ class DetectCsv {
           idx++;
         }
       }
-        console.log('LINE',macs)
       return macs
     }
 
